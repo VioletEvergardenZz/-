@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+from wordcloud import STOPWORDS, WordCloud
 from sklearn import linear_model
 from sklearn.preprocessing import PolynomialFeatures
 
@@ -128,6 +129,30 @@ def entities_2020_internet_users_percentage_distribution_scatter():
     plt.savefig('../img/2020年个国家地区互联网用户占比和移动互联网订阅量散点图及线性回归拟合.png')
     plt.show()
 
+# 用每一年互联网用户的比例最大的三个国家地区名生成词云
+def draw_internet_users_percentage_annual_top_3_wordcloud():
+    text = ''
+    year_groups = global_users.groupby('Year')
+    # 获取每一年互联网用户的比例最大的三个国家地区名数据
+    for year, year_df in year_groups:
+        year_df.sort_values(by='Internet Users(%)', ascending=False, inplace=True)
+        top_3 = year_df.head(3)
+        entities = top_3['Entity']
+        for entity in entities:
+            if len(entity.split()) > 1:
+                text += entity.replace(' ', '_') + ' '
+                # 将名字中含有空格的国家地区名中的空格替换成下划线_，避免一个名字被拆分成多个单词
+            else:
+                text += entity + ' '
+    wc = WordCloud(max_words=100, width=800, height=400, background_color='White',
+                   max_font_size=150, stopwords=STOPWORDS, margin=5, scale=1.5)
+    wc.generate(text)
+    plt.title('每年互联网用户的比例最大的国家地区名词云')
+    plt.imshow(wc)
+    plt.axis("off")
+    wc.to_file('../img/每年互联网用户的比例最大的国家地区名词云.png')
+    plt.show()
+
 # 对中国互联网用户数据的分析与可视化
 def chinese_users_analysis():
     # 绘制各项指标的数值图
@@ -198,6 +223,7 @@ if __name__ == '__main__':
     entities_2020_internet_users_percentage_pie_bar()
     entities_2020_internet_users_percentage_distribution_histogram()
     entities_2020_internet_users_percentage_distribution_scatter()
+    draw_internet_users_percentage_annual_top_3_wordcloud()
 
     # 通过切片获取中国互联网用户信息
     chinese_users = global_users.loc[global_users['Entity'] == 'China']
