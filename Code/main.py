@@ -20,9 +20,9 @@ def get_2020_entities_dataframe():
     for entity, entity_df in entity_group:
         if entity == 'World':
             continue
-        entity_2020 = entity_df[entity_df['Year'] == 2020]
+        entity_2020 = entity_df[entity_df['Year'] == 2020]  # 从 entity_df 中提取出 Year 列为 2020 的行
         entity_2020_df = pd.concat([entity_2020_df, entity_2020], join='outer', axis=0)
-    return entity_2020_df.set_index('Entity')
+    return entity_2020_df.set_index('Entity')   # 将合并后的 DataFrame 按 Entity 列设置为索引
 
 # 全球用户每年的各项数据的分析与可视化
 def global_internet_users_analysis():
@@ -34,7 +34,7 @@ def global_internet_users_analysis():
     column_mean = internet_users_groups.sum()
     internet_users_sum_data = pd.DataFrame({'Year': column_mean.index,
                                             'sum': column_mean.values})
-    plt.subplot(2, 2, 1)
+    plt.subplot(2, 2, 1)    # 将整个图表区域划分为 2 行 2 列的网格，并激活第 1 个子图
     plt.title('全球每年互联网用户总数')
     plt.xlabel('年份')
     plt.ylabel('全球每年互联网用户总数')
@@ -43,7 +43,7 @@ def global_internet_users_analysis():
 
     # 全球每年每100人移动端互联网订阅数、互联网使用人数比例、每100人宽带订阅数的平均值分析与可视化：
     year_groups = global_users.groupby('Year')
-    title_mapper = {'Cellular Subscription': '全球每年每100人移动互联网订阅数',
+    title_mapper = {'Cellular Subscription': '全球每年每100人移动互联网订阅数',     # 当一个普通人订阅了不止一个移动的服务时，这个数字可能会超过100
                     'Internet Users(%)': '全球每年互联网使用人数比例',
                     'Broadband Subscription': '全球每年每100人宽带订阅数平均值'}
     i = 2
@@ -219,12 +219,12 @@ if __name__ == '__main__':
     # 读取文件，获取全球互联网用户信息
     global_users = pd.read_csv('../data/Final.csv', delimiter=',', usecols=range(1, 8))  # 由于第一列的列名未知，所以不使用第一列
     # 对全球用户进行分析：
-    global_internet_users_analysis()
+    #global_internet_users_analysis()
     entities_2020_internet_users_percentage_pie_bar()
-    entities_2020_internet_users_percentage_distribution_histogram()
-    entities_2020_internet_users_percentage_distribution_scatter()
-    draw_internet_users_percentage_annual_top_3_wordcloud()
+    # entities_2020_internet_users_percentage_distribution_histogram()
+    # entities_2020_internet_users_percentage_distribution_scatter()
+    # draw_internet_users_percentage_annual_top_3_wordcloud()
 
     # 通过切片获取中国互联网用户信息
     chinese_users = global_users.loc[global_users['Entity'] == 'China']
-    chinese_users_analysis()
+    # chinese_users_analysis()
