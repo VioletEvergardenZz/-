@@ -67,6 +67,7 @@ def global_internet_users_analysis():
 # 2020年各个国家地区的用户占比饼图和柱状图绘制
 def entities_2020_internet_users_percentage_pie_bar():
     entity_2020_df = get_2020_entities_dataframe()
+    # 将"互联网用户数量"列的值转换为该列的比例，即每个国家/地区的互联网用户数占总用户数的比例
     entity_2020_df['No. of Internet Users'] /= entity_2020_df['No. of Internet Users'].sum()
 
     # 只筛选用户数量最多的10组数据，其他数据用`other`代替
@@ -79,9 +80,10 @@ def entities_2020_internet_users_percentage_pie_bar():
     # 绘制饼图
     set_seaborn_properties(context='notebook', font_scale=0.8)
     explode_arr = np.zeros(shape=(11))
-    explode_arr[0] = 0.07
-    plt.axes(aspect=1)
+    explode_arr[0] = 0.07   # 突出显示饼图中第一个扇区（比例最大的国家），通过设置其爆炸距离为0.07
+    plt.axes(aspect=1)  # 设置图表的坐标轴比例为1，确保饼图是圆形
     plt.title('2020年各个国家地区的互联网用户占比')
+    # 绘制饼图
     plt.pie(processed_data['No. of Internet Users'], labels=processed_data.index, explode=explode_arr,
             labeldistance=1.1, autopct='%2.1f%%', pctdistance=0.9, shadow=True)
     plt.legend(loc='lower right', bbox_to_anchor=(0.5, 0., 0.95, 0.5), ncols=2)
