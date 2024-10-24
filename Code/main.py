@@ -102,38 +102,41 @@ def entities_2020_internet_users_percentage_pie_bar():
 # 2020年各国家地区互联网用户占比分布直方图
 def entities_2020_internet_users_percentage_distribution_histogram():
     set_seaborn_properties(font_scale=0.8)
-    entity_2020_df = get_2020_entities_dataframe()
-    internet_users_percentage_sr = entity_2020_df['Internet Users(%)']
+    entity_2020_df = get_2020_entities_dataframe()  # 获取包含2020年各国或地区信息的数据框(DataFrame)
+    internet_users_percentage_sr = entity_2020_df['Internet Users(%)']  # 提取这一列
     plt.title('2020年各国家地区互联网用户占比分布直方图')
     plt.xlabel('互联网用户占比占比')
     plt.ylabel('国家地区数量')
+    # 创建一个新的 DataFrame，包含国家地区的名称（索引）和对应的互联网用户占比(值)
     data = pd.DataFrame({'Entity': internet_users_percentage_sr.index, 'Percent': internet_users_percentage_sr.values})
     sns.histplot(data, x='Percent')
     plt.savefig('../img/2020年各国家地区互联网用户占比分布直方图.png')
     plt.show()
 
-# 2020年个国家地区互联网用户占比和移动互联网订阅量的散点图
+# 2020年各国家地区互联网用户占比和移动互联网订阅量的散点图
 def entities_2020_internet_users_percentage_distribution_scatter():
     set_seaborn_properties()
     entity_2020_df = get_2020_entities_dataframe()
-    plt.title('2020年个国家地区互联网用户占比和移动互联网订阅量散点图')
+    plt.title('2020年各国家地区互联网用户占比和移动互联网订阅量散点图')
     plt.xlabel('互联网用户占比占比')
     plt.ylabel('移动互联网订阅量')
+    # 绘制散点图
     sns.scatterplot(data=entity_2020_df, x='Internet Users(%)', y='Cellular Subscription',
                     palette='husl', hue='Entity', legend=None)
 
     # 利用线性回归分析两者关系
-    x = entity_2020_df[['Internet Users(%)']]
+    x = entity_2020_df[['Internet Users(%)']]   # x 存储互联网用户占比的数据
+    # 创建线性回归模型 model_1，并使用 fit() 方法训练模型，预测 Cellular Subscription
     model_1 = linear_model.LinearRegression()
     model_1.fit(x, entity_2020_df[['Cellular Subscription']])
     data = pd.DataFrame({'x': x['Internet Users(%)'], 'pred_y': [x[0] for x in model_1.predict(x)]})
     sns.lineplot(data=data, x='x', y='pred_y')
-    plt.savefig('../img/2020年个国家地区互联网用户占比和移动互联网订阅量散点图及线性回归拟合.png')
+    plt.savefig('../img/2020年各国家地区互联网用户占比和移动互联网订阅量散点图及线性回归拟合.png')
     plt.show()
 
 # 用每一年互联网用户的比例最大的三个国家地区名生成词云
 def draw_internet_users_percentage_annual_top_3_wordcloud():
-    text = ''
+    text = ''   # 创建一个空字符串 text，用于存储所有选定的国家或地区名称
     year_groups = global_users.groupby('Year')
     # 获取每一年互联网用户的比例最大的三个国家地区名数据
     for year, year_df in year_groups:
@@ -146,6 +149,7 @@ def draw_internet_users_percentage_annual_top_3_wordcloud():
                 # 将名字中含有空格的国家地区名中的空格替换成下划线_，避免一个名字被拆分成多个单词
             else:
                 text += entity + ' '
+    # 创建一个 WordCloud 对象 wc，设置相关参数，如最大单词数、图像宽高、背景颜色、最大字体大小、停用词等
     wc = WordCloud(max_words=100, width=800, height=400, background_color='White',
                    max_font_size=150, stopwords=STOPWORDS, margin=5, scale=1.5)
     wc.generate(text)
@@ -221,8 +225,8 @@ if __name__ == '__main__':
     # 读取文件，获取全球互联网用户信息
     global_users = pd.read_csv('../data/Final.csv', delimiter=',', usecols=range(1, 8))  # 由于第一列的列名未知，所以不使用第一列
     # 对全球用户进行分析：
-    #global_internet_users_analysis()
-    entities_2020_internet_users_percentage_pie_bar()
+    # global_internet_users_analysis()
+    # entities_2020_internet_users_percentage_pie_bar()
     # entities_2020_internet_users_percentage_distribution_histogram()
     # entities_2020_internet_users_percentage_distribution_scatter()
     # draw_internet_users_percentage_annual_top_3_wordcloud()
